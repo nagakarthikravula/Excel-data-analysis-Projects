@@ -39,7 +39,7 @@ category performance, and customer behavior for QuickCart Online Retail.
 - Excluded Item column from analysis (10% missing, not required)
 
 ## 📈 Dashboard Preview
-![Dashboard Screenshot](Dashboard_Screenshot.png)
+![Dashboard Screenshot](Dashboard.png)
 
 ## 📂 Dataset Source
 [Kaggle - Dirty Retail Store Sales Dataset](https://www.kaggle.com/datasets/ahmedmohamed2003/retail-store-sales-dirty-for-data-cleaning/data)
