@@ -81,7 +81,7 @@ Delays occur even with **single-item orders**, suggesting the issue is **NOT ord
 
 ## 📊 Dashboard Preview
 
-![Dashboard Screenshot](Dashboard_Screenshot.png)
+![Dashboard Screenshot](Dashboard_Project2.png)
 
 ### Dashboard Components:
 - **KPI Cards:** Total Revenue, Total Orders, Avg Shipping Time, Delay Rate
