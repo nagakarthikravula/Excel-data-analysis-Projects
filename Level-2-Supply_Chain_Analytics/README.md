@@ -121,5 +121,3 @@ Delays occur even with **single-item orders**, suggesting the issue is **NOT ord
 - [ ] Implement seller ranking system in dashboard
 
 **Project completed as part of Excel Data Analysis Training — Level 2**
-
-**Next:** Level 3 — Power BI Dashboard Development
