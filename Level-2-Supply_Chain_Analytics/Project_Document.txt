@@ -1,0 +1,200 @@
+Project-2
+Step – 1: Understanding Data
+Table 1 (Olist_orders_item_dataset)
+1.	Order_Id
+•	Defines Order_id of the product ordered.
+•	Order_Id contains Duplicates, It represents multiple products are ordered or the same product ordered multiple times.
+•	It can be used to uniquely identify Order metrics.
+2.	Order_Item_Id
+•	Item id represents the frequency of item ordered with same order_id.
+•	Quantity of Products ordered from same order_Id.
+•	It Can be used to estimate the order size of order_id.
+3.	Product_Id
+•	Represents the unique Id of the product ordered by the customer.
+•	Contains Duplicates, As same product can be ordered by multiple customers.
+•	This is used for product analysis.
+4.	Shipping_Limit_Date
+•	Defines the limit date for seller to handover it to logistic partner.
+5.	Price
+•	Price of item ordered.
+6.	Freight_Value
+•	Defines the money customer should pay to deliver the product (Transportation Charges).
+•	Total Product = Product_Value + Freight_Value
+Table 2 (Olist_order_Payments_dataset)
+1.	Order_id
+•	Unique Identfier of an order.
+2.	Payment_Sequential
+•	Defines a sequential number If a customer uses more than one payment method while doing transactions
+•	It can be 
+o	Credit card + Voucher
+o	Payment 1 (X amount) + Payment 2 (Y amount)
+       Ex: 1,2…
+3.	Payment_Type
+•	Type of payment method customer used to pay for the product
+•	Payment Types
+o	Boleto
+o	Credit_card
+o	Debit_Card
+o	Voucher
+o	Not_Defined (These values in rows needed to be handled).
+4.	Payment_Installments
+•	Defines number of installments chosen by the customer to buy the item.
+Ex: Customer bought R$ 100,00 product and paid it in 2 installments, Which is R$ 50,00 paid for every installment.
+5.	Payment_Value
+•	Represents the amount paid by the customer for that specific transaction.
+Table 3 (Olist_orders_dataset)
+1.	Order_Id
+•	Unique order_id of every customer order.
+2.	Customer_Id
+•	Unique Customer_id for every ordered customer.
+3.	Order_Status
+•	Status of the order (Delivered, Cancelled, Shipped, Etc.)
+4.	Order_Purchase_Timestamp
+•	Time and date of order purchases.
+5.	Order_Approved_At
+•	Time and date of Payment approved.
+6.	Order_Delivered_Carrier_Date
+•	Time and date order handover to logistic partner
+7.	Order_estimated_Customer_Date
+•	Estimated delivery date informed to customer at purchase moment.
+8.	Order_delivered_Customer_Date
+•	Date of order delivered to customer.
+Table 4 (Olist_Products_dataset)
+1.	Product_Id
+•	Unique product id for every product.
+2.	Product_Category_Name
+•	Category a product comes under.
+3.	Product_Name_Length
+•	Number of letters in product.
+4.	Product_Description_Length
+•	Number of letters in product description.
+5.	Product_Photos_Quantity
+•	Number of photos published for the product.
+6.	Product_Measurements
+•	product_weight_g : Weight of product measured in grams.
+•	product_length_cm : Length of product measures in centimeters.
+•	product_height_cm: Height of product measured in centimeters.
+•	product_width_cm : Width of product measured in centimeters.
+Table 5 (Olist_sellers_dataset)
+1.	Seller_Id
+•	Unique Id of seller.
+2.	Seller_Zip_Code_Prefix
+•	First 5 digits of seller zip code.
+3.	Seller_City
+•	Seller city name.
+4.	Seller_State
+•	Seller state name.
+
+Step – 2: Data Quality
+Table 1 (Olist_orders_item_dataset)
+1.	No Missing, Blank, Null values found in the table.
+2.	Date Column is consistent.
+3.	Price, Freight values are also consistent.
+Table 2 (Olist_order_Payments_dataset)
+1.	Removed ‘not_defined’ value rows from Payment_Method as there are only 3 rows of 103887.
+2.	Other than that, There are no null, blank, missing values in the table.
+Table 3 (Olist_orders_dataset)
+1.	There are null values in columns (order_delivered_carrier_date, order_delivered_customer_date) and these should not be removed, These have null due to cancelled, unavailable.
+2.	‘Order_approved_at ‘ has 160 null values of 99442, Removing these rows doesn’t make a difference.
+Table 4 (Olist_Products_dataset)
+1.	There are 601 null values in product_category_name, But still can’t remove them as there are other fields (measurements) filled up.
+2.	Important field (product_id) are consistent.
+3.	Measurement fields have missing values, Which can neither be replaced with math nor removed as there are only 1.87% null values.
+Table 5 (Olist_sellers_dataset)
+1.	There is only 1 row of wrong datatype in city column and that is removed.
+
+Step – 3: Answering Stakeholder Questions
+1.	Total revenue and total orders?
+•	Calculated Total orders by pivoting orders dataset.
+•	Total_Revenue = Sum of Total Price
+o	Total_Price = Price + Freight_Value (Transportation Charges)
+•	Total_Orders = 98667
+•	Total_Revenue = R$ 1,58,43,553.24 
+2.	Average shipping time?
+•	Average of Delivery Gap (In Days)
+o	Delivery_Gap = Order_Customer_Delivery_Date – Order_Purchase_date.
+•	Average_Shipping_Time (In Days)  = 13
+3.	Top categories by sales ?
+•	Created new table with product_id, Total_Price, Category_Name, Category_Name (Eng version). Then pivoted category_name in rows and Total_Price in values.
+•	Top categories are:
+o	Health_Beauty
+o	Watches_Gifts
+o	Bed_Bath_Table
+o	Sports_Leisure
+o	Computer_Accessories
+Followed by others..
+4.	Regions with most delays ?
+•	Created delay column
+o	Delay = order_delivered_customer_date 	> order_estimated_delivery_date
+•	Then respected to order_id, Extracted Seller_Id from sellers table along with seller_State with respect to seller_Id.
+•	Pivoted Seller_Id, Delay, Seller_State
+o	Seller_City  Rows
+o	Count_Of_Seller_Id  Values
+o	Delay  Filter (Selected rows with ‘Delay’)
+•	Top 5 states
+o	SP – 6002
+o	PR – 485
+o	MG – 431
+o	RJ – 354
+o	SC – 215
+5.	Order size vs shipping delays ?
+•	Created a Table of order_id, Order_Size, Delay_Column
+o	Order_Size = Number of products ordered
+•	Pivoted Order_Size and Count of Delayed orders
+•	Most Delay noticed from 1 to 6 products ordered.
+•	Delay_Percentage = 8% ( 7827 of 96477 rows )
+6.	Worst performing sellers ?
+•	Worst = When the delay percentage for a unique seller has greater than 30%, Then they are considered as worst seller.
+•	Process of finding worst sellers :
+o	Created a pivot table with Seller_Id, Delay
+o	In pivot table :
+•	Seller_id  rows
+•	Delay  columns ( selected Delay orders)
+•	Delay  values (To get count)
+•	Count_Seller_Id  Values (Total orders for a seller)
+•	Found 215 sellers of 3095 sellers with delay percentage more than 30%
+7.	Monthly/seasonal trends ?
+•	Took order_delivered column and created a pivot table.
+•	Pivot table:
+o	Order_delivered_Customer_Date(Month)  Rows
+o	Date_Count  Values
+o	Order_delivered_Customer_Date(Year)  Columns
+•	Insights :
+o	May, Jun, Aug has the most sales across all years compared to other months.
+o	Revenue peaked in Dec (2017), followed by Jan (2018) and Aug (2018).
+8.	Factors contributing to late delivery ?
+•	Specific sellers has highest delay percentage.
+•	When the order size is more, The delay in delivery is more.
+•	Certain states has high delays.
+Step – 4: Creating Dashboard
+1.	KPI’s
+•	KPI-1 : Total Revenue
+•	KPI-2 : Total orders
+•	KPI-3 : Average Shipping Time ( In Days )
+•	KPI-4 : Delay Percentage
+2.	Revenue of Top 5 Categories
+•	Created bar chart from top 5 categories :
+o	X - axis : Revenue
+o	Y - axis : Category Name
+3.	Delay Count by state
+•	Created column chart :
+o	X - axis : State
+o	Y - axis : Delay_Count
+4.	Monthly Trends over Years
+•	Created Line chart :
+o	X – axis : Month
+o	Y – axis : Order_Count
+o	Slicer : Years
+5.	Delay Count By Order Size
+•	Created a bar chart :
+o	X – axis : Delay Count
+o	Y – axis : Order Size
+Recommendations
+S.No	Recommendation	Supporting Data
+1	Investigate why state ‘SP’ has high delay in orders compared to others. It is 12x delay rate to other states.	Q4 Analysis
+(6002) delays
+2	Questioning sellers why most delay are being recorded, Even the order size is 1	Q5 Analysis
+3	Sellers over 215 members has delay rate over 30% out of 3095 sellers. Should question sellers about delay in their shipment. Issue warnings to low performance sellers.	Q6 Analysis
+4	Managing delays in most revenue generated months ( Jan, Aug, Dec ).	Q7 Analysis
+
+
